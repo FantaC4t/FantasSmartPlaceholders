@@ -1,0 +1,29 @@
+# Gradle
+.gradle/
+build/
+out/
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# VS Code
+.vscode/
+
+# Fabric Loom cache
+.fabric/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Compiled output (keep libs/ out — distribute via releases)
+libs/
