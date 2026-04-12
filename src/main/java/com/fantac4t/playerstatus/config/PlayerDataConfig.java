@@ -133,6 +133,29 @@ public final class PlayerDataConfig {
         markDirty();
     }
 
+    // No-sleep methods
+    public static boolean isNoSleep(UUID id) {
+        return get(id).noSleep;
+    }
+
+    public static void setNoSleep(UUID id, boolean value) {
+        get(id).noSleep = value;
+        markDirty();
+    }
+
+    /**
+     * Returns a list of UUIDs that have no-sleep enabled.
+     */
+    public static List<UUID> getNoSleepPlayers() {
+        List<UUID> result = new ArrayList<>();
+        for (Map.Entry<UUID, PlayerData> entry : PLAYER_DATA.entrySet()) {
+            if (entry.getValue().noSleep) {
+                result.add(entry.getKey());
+            }
+        }
+        return result;
+    }
+
     // PlayerData class representing all data for a single player
     private static class PlayerData {
         private UUID id;
@@ -141,6 +164,7 @@ public final class PlayerDataConfig {
         private String link = "";
         private String color = "";
         private String role = ""; // suffix text
+        private boolean noSleep = false;
         private PlayerData(UUID id) { this.id = id; }
     }
 }

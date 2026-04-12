@@ -26,6 +26,16 @@ public class ModConfig {
     public String vcDeafenedIcon = "\u232E";      // ⌮ vc_disabled
     public String vcDisconnectedIcon = "\u232F";  // ⌯ vc_disconnected
     public String vcGroupIcon = "\u2330";         // ⌰ vc_group (texture TBD)
+
+    // No-sleep settings
+    public String noSleepPlaceholder = "<red>\u2620</red>";  // ☠ skull icon when active
+    public String noSleepNotPlaceholder = "";                 // empty when inactive
+    public String noSleepOnMessage = "<red>You have toggled no-sleep on. Others will be warned when they try to sleep.</red>";
+    public String noSleepOffMessage = "<green>You have toggled no-sleep off. Others can sleep peacefully.</green>";
+    public String noSleepBroadcastOnMessage = "<red>{player} doesn't want to skip the night!</red>";
+    public String noSleepBroadcastOffMessage = "<green>{player} is now okay with skipping the night.</green>";
+    public String noSleepBedTitle = "<red>Can't skip the night!</red>";
+    public String noSleepBedSubtitle = "<yellow>{players} doesn't want to sleep!</yellow>";
     
     public ModConfig() {
         // Initialize with text-based role symbols

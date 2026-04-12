@@ -2,6 +2,7 @@ package com.fantac4t.playerstatus;
 
 import com.fantac4t.playerstatus.commands.ColorCommand;
 import com.fantac4t.playerstatus.commands.LiveCommand;
+import com.fantac4t.playerstatus.commands.NoSleepCommand;
 import com.fantac4t.playerstatus.commands.SuffixCommand;
 import com.fantac4t.playerstatus.config.ModConfig;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
@@ -10,7 +11,9 @@ import com.fantac4t.playerstatus.placeholders.ColorPlaceholders;
 import com.fantac4t.playerstatus.placeholders.LivePlaceholder;
 import com.fantac4t.playerstatus.placeholders.RolePlaceholder;
 import com.fantac4t.playerstatus.placeholders.PlaceholderManager;
+import com.fantac4t.playerstatus.placeholders.NoSleepPlaceholder;
 import com.fantac4t.playerstatus.placeholders.VoicechatPlaceholder;
+import com.fantac4t.playerstatus.player.NoSleepManager;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -38,16 +41,19 @@ public class PlayerStatus implements ModInitializer {
         ColorPlaceholders.register();
         RolePlaceholder.register();
         VoicechatPlaceholder.register();
+        NoSleepPlaceholder.register();
         
         // Register commands
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             LiveCommand.register(dispatcher);
             ColorCommand.register(dispatcher);
             SuffixCommand.register(dispatcher);
+            NoSleepCommand.register(dispatcher);
         });
         
         // Register events
         PlayerEvents.register();
+        NoSleepManager.registerBedEvent();
         
         // ADD THIS: Save player data when server stops
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {

@@ -2,8 +2,8 @@
   "schemaVersion": 1,
   "id": "playerstatus",
   "version": "${version}",
-  "name": "Player Status",
-  "description": "Player status features including live streaming status and custom name colors",
+  "name": "Fanta's Smart Placeholders",
+  "description": "Smart placeholders and player features: live status, name colors, roles, no-sleep, and voice chat integration",
   "authors": [
     "Fantac4t"
   ],
