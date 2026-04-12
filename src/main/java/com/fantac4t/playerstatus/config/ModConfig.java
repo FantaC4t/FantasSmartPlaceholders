@@ -20,13 +20,12 @@ public class ModConfig {
     // Role settings
     public Map<String, String> roles = new HashMap<>();
     
-    // Voice chat status icon configurations
-    public String vcSpeakingIcon = "S";
-    public String vcMutedIcon = "M";
-    public String vcDeafenedIcon = "D";
-    public String vcGroupIcon = "G";
-    public String vcConnectedIcon = "C";
-    public String vcDisconnectedIcon = "X";
+    // Voice chat status icon configurations (mapped in resource pack font)
+    public String vcSpeakingIcon = "\u232C";      // ⌬ vc_talking
+    public String vcMutedIcon = "\u232D";         // ⌭ vc_microphone_muted
+    public String vcDeafenedIcon = "\u232E";      // ⌮ vc_disabled
+    public String vcDisconnectedIcon = "\u232F";  // ⌯ vc_disconnected
+    public String vcGroupIcon = "\u2330";         // ⌰ vc_group (texture TBD)
     
     public ModConfig() {
         // Initialize with text-based role symbols

@@ -14,14 +14,22 @@ public final class VoicechatPlaceholder {
             Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "vc_status");
 
     public static void register() {
-        // Single placeholder that reflects the player's current VC state, priority-ordered:
-        // 🔊 speaking | 🔇 muted | 📵 disconnected | "" idle/connected
         Placeholders.register(VC_STATUS_ID, (ctx, arg) -> {
             if (!ctx.hasPlayer()) return PlaceholderResult.value("");
             UUID uuid = ctx.player().getUUID();
-            if (VoicechatStateManager.isSpeaking(uuid))     return PlaceholderResult.value("🔊");
-            if (VoicechatStateManager.isMuted(uuid))        return PlaceholderResult.value("🔇");
-            if (VoicechatStateManager.isDisconnected(uuid)) return PlaceholderResult.value("📵");
+
+            // Deafened/disconnected always take priority
+            if (VoicechatStateManager.isDeafened(uuid))
+                return PlaceholderResult.value(PlayerStatus.CONFIG.vcDeafenedIcon);
+            if (VoicechatStateManager.isDisconnected(uuid))
+                return PlaceholderResult.value(PlayerStatus.CONFIG.vcDisconnectedIcon);
+
+            if (VoicechatStateManager.isSpeaking(uuid))
+                return PlaceholderResult.value(PlayerStatus.CONFIG.vcSpeakingIcon);
+
+            if (VoicechatStateManager.isInGroup(uuid))
+                return PlaceholderResult.value(PlayerStatus.CONFIG.vcGroupIcon);
+
             return PlaceholderResult.value("");
         });
     }
