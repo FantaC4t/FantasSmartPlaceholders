@@ -2,7 +2,7 @@ package com.fantac4t.playerstatus.player;
 
 import com.fantac4t.playerstatus.PlayerStatus;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
-import eu.pb4.placeholders.api.TextParserUtils;
+import eu.pb4.placeholders.api.parsers.TagParser;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -19,7 +19,6 @@ import net.minecraft.sounds.SoundSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public final class NoSleepManager {
     private NoSleepManager() {}
@@ -125,7 +124,7 @@ public final class NoSleepManager {
     private static Component parseMini(String text) {
         if (empty(text)) return Component.empty();
         try {
-            return TextParserUtils.formatText(text);
+            return TagParser.DEFAULT.parseText(text, null);
         } catch (Throwable t) {
             return Component.literal(text);
         }

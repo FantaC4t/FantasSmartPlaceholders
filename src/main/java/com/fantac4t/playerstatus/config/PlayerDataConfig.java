@@ -28,25 +28,21 @@ public final class PlayerDataConfig {
                 PLAYER_DATA.clear();
                 for (Map.Entry<String, PlayerData> e : loaded.entrySet()) {
                     try {
-                        UUID id = UUID.fromString(e.getKey());
-                        PlayerData pd = e.getValue();
-                        pd.id = id;
-                        PLAYER_DATA.put(id, pd);
+                        PLAYER_DATA.put(UUID.fromString(e.getKey()), e.getValue());
                     } catch (IllegalArgumentException ex) {
-                        PlayerStatus.LOGGER.warn("Skipping invalid UUID key: " + e.getKey());
+                        PlayerStatus.LOGGER.warn("Skipping invalid UUID key: {}", e.getKey());
                     }
                 }
             }
         } catch (Exception ex) {
-            PlayerStatus.LOGGER.error("Failed to load player_data.json. NOT overwriting file. Fix JSON manually.", ex);
+            PlayerStatus.LOGGER.error("Failed to load player_data.json. NOT overwriting — fix JSON manually.", ex);
         }
     }
 
     private static void markDirty() { dirty = true; }
 
     public static void save() {
-        if (!dirty) return;
-        if (PLAYER_DATA_FILE == null) return;
+        if (!dirty || PLAYER_DATA_FILE == null) return;
         try (Writer w = new FileWriter(PLAYER_DATA_FILE)) {
             Map<String, PlayerData> out = new HashMap<>();
             for (var e : PLAYER_DATA.entrySet()) {
@@ -59,112 +55,48 @@ public final class PlayerDataConfig {
         }
     }
 
-    // Helper method to get or create player data
     private static PlayerData get(UUID id) {
-        return PLAYER_DATA.computeIfAbsent(id, PlayerData::new);
+        return PLAYER_DATA.computeIfAbsent(id, k -> new PlayerData());
     }
 
-    // Live status methods
-    public static boolean isLive(UUID id) {
-        // Your existing implementation to check if a player is live
-        boolean result = get(id).isLive;
-        
-        // Add this debug logging
-        PlayerStatus.LOGGER.debug("Checking if player {} is live: {}", id, result);
-        
-        return result;
-    }
+    // ── Live ────────────────────────────────────────────────────────
+    public static boolean isLive(UUID id)              { return get(id).isLive; }
+    public static void    setLive(UUID id, boolean v)  { get(id).isLive = v; markDirty(); }
 
-    public static void setLive(UUID id, boolean value) {
-        get(id).isLive = value;
-        markDirty();
-    }
+    public static boolean persist(UUID id)             { return get(id).persist; }
+    public static void    setPersist(UUID id, boolean v){ get(id).persist = v; markDirty(); }
 
-    public static boolean persist(UUID id) {
-        return get(id).persist;
-    }
+    public static String  getLink(UUID id)             { return get(id).link; }
+    public static void    setLink(UUID id, String v)   { get(id).link = v; markDirty(); }
 
-    public static void setPersist(UUID id, boolean value) {
-        get(id).persist = value;
-        markDirty();
-    }
+    // ── Color ───────────────────────────────────────────────────────
+    public static String  getColor(UUID id)            { return get(id).color; }
+    public static void    setColor(UUID id, String v)  { get(id).color = v; markDirty(); }
+    public static void    clearColor(UUID id)          { get(id).color = ""; markDirty(); }
 
-    public static String getLink(UUID playerId) {
-        // Return the stored stream link for the player
-        String link = get(playerId).link;
-        PlayerStatus.LOGGER.debug("Getting stream link for player {}: {}", playerId, link);
-        return link;
-    }
+    // ── Suffix ──────────────────────────────────────────────────────
+    public static String  getSuffix(UUID id)           { return get(id).suffix; }
+    public static void    setSuffix(UUID id, String v) { get(id).suffix = v; markDirty(); }
+    public static void    clearSuffix(UUID id)         { get(id).suffix = ""; markDirty(); }
 
-    public static void setLink(UUID playerId, String link) {
-        // Store the stream link for the player
-        get(playerId).link = link;
-        markDirty();
-    }
+    // ── No-Sleep ────────────────────────────────────────────────────
+    public static boolean isNoSleep(UUID id)           { return get(id).noSleep; }
+    public static void    setNoSleep(UUID id, boolean v){ get(id).noSleep = v; markDirty(); }
 
-    // Color methods
-    public static String getColor(UUID id) {
-        return get(id).color;
-    }
-
-    public static void setColor(UUID id, String value) {
-        get(id).color = value;
-        markDirty();
-    }
-
-    public static void clearColor(UUID id) {
-        PlayerData pd = get(id);
-        pd.color = "";
-        markDirty();
-    }
-    
-    // Simple suffix (role) methods
-    public static String getSuffix(UUID id) {
-        return get(id).role; // role field reused as suffix
-    }
-
-    public static void setSuffix(UUID id, String value) {
-        get(id).role = value;
-        markDirty();
-    }
-
-    public static void clearSuffix(UUID id) {
-        get(id).role = "";
-        markDirty();
-    }
-
-    // No-sleep methods
-    public static boolean isNoSleep(UUID id) {
-        return get(id).noSleep;
-    }
-
-    public static void setNoSleep(UUID id, boolean value) {
-        get(id).noSleep = value;
-        markDirty();
-    }
-
-    /**
-     * Returns a list of UUIDs that have no-sleep enabled.
-     */
     public static List<UUID> getNoSleepPlayers() {
         List<UUID> result = new ArrayList<>();
         for (Map.Entry<UUID, PlayerData> entry : PLAYER_DATA.entrySet()) {
-            if (entry.getValue().noSleep) {
-                result.add(entry.getKey());
-            }
+            if (entry.getValue().noSleep) result.add(entry.getKey());
         }
         return result;
     }
 
-    // PlayerData class representing all data for a single player
     private static class PlayerData {
-        private UUID id;
-        private boolean isLive = false;
-        private boolean persist = false;
-        private String link = "";
-        private String color = "";
-        private String role = ""; // suffix text
-        private boolean noSleep = false;
-        private PlayerData(UUID id) { this.id = id; }
+        boolean isLive  = false;
+        boolean persist = false;
+        String  link    = "";
+        String  color   = "";
+        String  suffix  = "";
+        boolean noSleep = false;
     }
 }

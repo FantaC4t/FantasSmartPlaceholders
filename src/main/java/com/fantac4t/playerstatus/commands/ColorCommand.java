@@ -31,11 +31,9 @@ public final class ColorCommand {
                     String playerName = player.getName().getString();
                     Component coloredName = RGBColorProcessor.getColoredPlayerName(playerName, value);
                     
-                    MutableComponent message = Component.literal("Your color has been set to " + value + ".\nYour name now looks like this: ")
+                    MutableComponent message = Component.literal("Your color has been set to " + value + ". Your name now looks like this: ")
                         .append(coloredName);
-                    
                     ctx.getSource().sendSuccess(() -> message, false);
-                    player.sendSystemMessage(Component.literal("Color set to " + value));
                     return 1;
                 }))
             .then(Commands.literal("clear")

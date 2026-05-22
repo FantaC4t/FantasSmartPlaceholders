@@ -6,16 +6,17 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 public final class PlayerEvents {
     public static void register() {
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            var player = handler.getPlayer();
-            var id = player.getUUID();
-            // Reset live status if not persistent
+            var id = handler.getPlayer().getUUID();
+
             if (!PlayerDataConfig.persist(id) && PlayerDataConfig.isLive(id)) {
                 PlayerDataConfig.setLive(id, false);
             }
-            // Always reset noSleep status on disconnect
             if (PlayerDataConfig.isNoSleep(id)) {
                 PlayerDataConfig.setNoSleep(id, false);
             }
+
+            // Save on every disconnect so a crash doesn't lose data
+            PlayerDataConfig.save();
         });
     }
 }

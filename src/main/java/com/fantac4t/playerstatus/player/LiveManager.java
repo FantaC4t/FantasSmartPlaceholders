@@ -4,10 +4,9 @@ import com.fantac4t.playerstatus.PlayerStatus;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.TextParserUtils;
+import eu.pb4.placeholders.api.parsers.TagParser;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -77,16 +76,10 @@ public final class LiveManager {
         if (empty(template)) return Component.empty();
 
         try {
-            // 1) Expand your simple custom placeholders first
             String expanded = expandCustomPlaceholders(template, player);
-            PlayerStatus.LOGGER.info("[PlayerStatus] After custom expansion: {}", expanded);
+            String tagged   = ensureClickableUrlTags(expanded);
 
-            // 2) Ensure plain URLs become MiniMessage-style clickable tags if not already present
-            String tagged = ensureClickableUrlTags(expanded);
-            PlayerStatus.LOGGER.info("[PlayerStatus] After URL tagging: {}", tagged);
-
-            // 3) Parse tags (colors, hover, click, etc.) using pb4 TextParserUtils
-            Component withTags = TextParserUtils.formatText(tagged);
+            Component withTags = TagParser.DEFAULT.parseText(tagged != null ? tagged : "", null);
 
             // 4) Resolve Placeholder API placeholders on the parsed component
             PlaceholderContext context = PlaceholderContext.of(player);
@@ -136,19 +129,22 @@ public final class LiveManager {
 
     private static String expandCustomPlaceholders(String template, ServerPlayer player) {
         String result = template;
+        String name   = player.getName().getString();
+        String link   = normalizeUrl(safe(PlayerDataConfig.getLink(player.getUUID())));
 
-        // Replace %link% with actual link
-        if (result.contains("%link%")) {
-            String link = PlayerDataConfig.getLink(player.getUUID());
-            result = result.replace("%link%", safe(link));
-        }
-
-        // Replace %player_name%
-        if (result.contains("%player_name%")) {
-            result = result.replace("%player_name%", player.getName().getString());
-        }
+        // Support both {token} and %token% styles
+        result = result.replace("{player}",      name);
+        result = result.replace("%player_name%", name);
+        result = result.replace("{link}",        link);
+        result = result.replace("%link%",        link);
 
         return result;
+    }
+
+    private static String normalizeUrl(String s) {
+        if (s == null || s.isBlank()) return "";
+        if (!s.matches("(?i)https?://.*")) return "https://" + s;
+        return s;
     }
 
     private static boolean empty(String s) {
