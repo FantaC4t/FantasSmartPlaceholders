@@ -152,4 +152,4 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-*Made by [fantac4t](https://fantacat.net) for [TSNSMP](https://tsnsmp.online)*
+*Made by [fantac4t](https://fantacat.net) for [TSNSMP](https://www.tsnsmp.online)*
