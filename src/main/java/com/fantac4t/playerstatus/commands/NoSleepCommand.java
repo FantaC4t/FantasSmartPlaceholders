@@ -9,8 +9,8 @@ public final class NoSleepCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("nosleep")
             .executes(ctx -> {
-                boolean enabled = NoSleepManager.toggle(ctx.getSource().getPlayerOrException());
-                return enabled ? 1 : 0;
+                NoSleepManager.toggle(ctx.getSource().getPlayerOrException());
+                return 1;
             })
         );
     }

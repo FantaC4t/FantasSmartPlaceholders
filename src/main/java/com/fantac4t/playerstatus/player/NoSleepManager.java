@@ -2,7 +2,7 @@ package com.fantac4t.playerstatus.player;
 
 import com.fantac4t.playerstatus.PlayerStatus;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
-import eu.pb4.placeholders.api.parsers.TagParser;
+import com.fantac4t.playerstatus.util.TextUtil;
 import net.fabricmc.fabric.api.entity.event.v1.EntitySleepEvents;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -23,19 +23,13 @@ import java.util.UUID;
 public final class NoSleepManager {
     private NoSleepManager() {}
 
-    /**
-     * Returns the placeholder text — icon when active, empty when inactive.
-     */
     public static String placeholder(UUID id) {
         if (id == null) return "";
         return PlayerDataConfig.isNoSleep(id)
-                ? safe(PlayerStatus.CONFIG.noSleepPlaceholder)
-                : safe(PlayerStatus.CONFIG.noSleepNotPlaceholder);
+                ? TextUtil.safe(PlayerStatus.CONFIG.noSleepPlaceholder)
+                : TextUtil.safe(PlayerStatus.CONFIG.noSleepNotPlaceholder);
     }
 
-    /**
-     * Toggle no-sleep for a player. Sends personal + broadcast messages.
-     */
     public static boolean toggle(ServerPlayer player) {
         UUID id = player.getUUID();
         boolean newState = !PlayerDataConfig.isNoSleep(id);
@@ -51,34 +45,22 @@ public final class NoSleepManager {
         return newState;
     }
 
-    /**
-     * Register the bed-enter event listener.
-     * When a player gets into bed, check for online no-sleep players and warn the sleeper.
-     */
     public static void registerBedEvent() {
         EntitySleepEvents.START_SLEEPING.register((entity, sleepingPos) -> {
             if (!(entity instanceof ServerPlayer sleeper)) return;
 
             MinecraftServer server = ((ServerLevel) sleeper.level()).getServer();
             List<String> noSleepNames = getOnlineNoSleepNames(server, sleeper);
-
             if (noSleepNames.isEmpty()) return;
 
             String joined = String.join(", ", noSleepNames);
+            Component title    = TextUtil.parseMini(PlayerStatus.CONFIG.noSleepBedTitle.replace("{players}", joined));
+            Component subtitle = TextUtil.parseMini(PlayerStatus.CONFIG.noSleepBedSubtitle.replace("{players}", joined));
 
-            // Build title and subtitle from config templates
-            String titleTemplate = PlayerStatus.CONFIG.noSleepBedTitle;
-            String subtitleTemplate = PlayerStatus.CONFIG.noSleepBedSubtitle;
-
-            Component title = parseMini(titleTemplate.replace("{players}", joined));
-            Component subtitle = parseMini(subtitleTemplate.replace("{players}", joined));
-
-            // Send title packets
             sleeper.connection.send(new ClientboundSetTitlesAnimationPacket(10, 60, 20));
             sleeper.connection.send(new ClientboundSetTitleTextPacket(title));
             sleeper.connection.send(new ClientboundSetSubtitleTextPacket(subtitle));
 
-            // Play warning sound (only to the sleeper)
             sleeper.connection.send(new ClientboundSoundPacket(
                     Holder.direct(SoundEvents.VILLAGER_NO), SoundSource.MASTER,
                     sleeper.getX(), sleeper.getY(), sleeper.getZ(),
@@ -87,49 +69,30 @@ public final class NoSleepManager {
         });
     }
 
-    /**
-     * Get display names of online players who have no-sleep enabled (excluding the sleeper).
-     */
     private static List<String> getOnlineNoSleepNames(MinecraftServer server, ServerPlayer exclude) {
         List<UUID> noSleepIds = PlayerDataConfig.getNoSleepPlayers();
         List<String> names = new ArrayList<>();
-
         for (UUID id : noSleepIds) {
             if (id.equals(exclude.getUUID())) continue;
             ServerPlayer p = server.getPlayerList().getPlayer(id);
-            if (p != null) { // only online players
-                names.add(p.getName().getString());
-            }
+            if (p != null) names.add(p.getName().getString());
         }
         return names;
     }
 
     private static void broadcast(MinecraftServer server, ServerPlayer source, String template) {
-        if (server == null || empty(template)) return;
+        if (server == null || TextUtil.empty(template)) return;
         Component comp = buildMessage(template, source);
         server.getPlayerList().getPlayers().forEach(p -> p.sendSystemMessage(comp));
     }
 
     private static void sendTemplate(ServerPlayer player, String template) {
-        if (empty(template)) return;
+        if (TextUtil.empty(template)) return;
         player.sendSystemMessage(buildMessage(template, player));
     }
 
     private static Component buildMessage(String template, ServerPlayer player) {
-        if (empty(template)) return Component.empty();
-        String expanded = template.replace("{player}", player.getName().getString());
-        return parseMini(expanded);
+        if (TextUtil.empty(template)) return Component.empty();
+        return TextUtil.parseMini(template.replace("{player}", player.getName().getString()));
     }
-
-    private static Component parseMini(String text) {
-        if (empty(text)) return Component.empty();
-        try {
-            return TagParser.DEFAULT.parseText(text, null);
-        } catch (Throwable t) {
-            return Component.literal(text);
-        }
-    }
-
-    private static boolean empty(String s) { return s == null || s.isEmpty(); }
-    private static String safe(String s) { return s == null ? "" : s; }
 }
