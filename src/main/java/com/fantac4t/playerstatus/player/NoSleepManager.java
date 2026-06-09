@@ -93,6 +93,6 @@ public final class NoSleepManager {
 
     private static Component buildMessage(String template, ServerPlayer player) {
         if (TextUtil.empty(template)) return Component.empty();
-        return TextUtil.parseMini(template.replace("{player}", player.getName().getString()));
+        return TextUtil.parseMini(template.replace("{player}", player.getName().getString()), player);
     }
 }

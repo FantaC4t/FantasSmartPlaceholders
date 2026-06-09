@@ -28,3 +28,6 @@ Thumbs.db
 
 # Compiled output (keep libs/ out — distribute via releases)
 libs/
+
+# Local changelog (maintained outside repo)
+CHANGELOG.md

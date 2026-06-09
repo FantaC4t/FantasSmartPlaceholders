@@ -3,9 +3,6 @@ package com.fantac4t.playerstatus.player;
 import com.fantac4t.playerstatus.PlayerStatus;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
 import com.fantac4t.playerstatus.util.TextUtil;
-import eu.pb4.placeholders.api.PlaceholderContext;
-import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.parsers.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -72,8 +69,7 @@ public final class LiveManager {
         try {
             String expanded = expandCustomPlaceholders(template, player);
             String tagged = ensureClickableUrlTags(expanded);
-            Component withTags = TagParser.DEFAULT.parseText(tagged, null);
-            return Placeholders.parseText(withTags, PlaceholderContext.of(player));
+            return TextUtil.parseMini(tagged, player);
         } catch (Throwable t) {
             PlayerStatus.LOGGER.warn("[PlayerStatus] Message building failed: {}", t.toString());
             return Component.literal(template);

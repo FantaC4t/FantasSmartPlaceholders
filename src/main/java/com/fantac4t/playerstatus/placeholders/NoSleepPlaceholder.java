@@ -1,10 +1,10 @@
 package com.fantac4t.playerstatus.placeholders;
 
-import com.fantac4t.playerstatus.PlayerStatus;
 import com.fantac4t.playerstatus.player.NoSleepManager;
+import com.fantac4t.playerstatus.util.TextUtil;
+import com.fantac4t.playerstatus.PlayerStatus;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.parsers.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
@@ -33,8 +33,7 @@ public final class NoSleepPlaceholder {
             String raw = NoSleepManager.placeholder(target);
             if (raw == null || raw.isEmpty()) return PlaceholderResult.value(Component.empty());
 
-            try { return PlaceholderResult.value(TagParser.DEFAULT.parseText(raw, null)); }
-            catch (Throwable t) { return PlaceholderResult.value(Component.literal(raw)); }
+            return PlaceholderResult.value(TextUtil.parseMini(raw));
         });
     }
 }
