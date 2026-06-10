@@ -1,6 +1,10 @@
 # Fanta's Smart Placeholders
 
-A Fabric server-side mod that adds live streaming status, custom name colors, player roles, no-sleep toggling, and real-time voice chat indicators via [Placeholder API](https://placeholders.pb4.eu/).
+[![Modrinth Downloads](https://img.shields.io/modrinth/dt/fantas-smart-placeholders?logo=modrinth&color=1bd96a&label=downloads)](https://modrinth.com/mod/fantas-smart-placeholders)
+[![Modrinth Version](https://img.shields.io/modrinth/v/fantas-smart-placeholders?logo=modrinth&color=1bd96a&label=version)](https://modrinth.com/mod/fantas-smart-placeholders)
+[![Modrinth Game Versions](https://img.shields.io/modrinth/game-versions/fantas-smart-placeholders?logo=modrinth&color=1bd96a&label=minecraft)](https://modrinth.com/mod/fantas-smart-placeholders)
+
+A Fabric server-side mod that adds live streaming status, custom name colors, LuckPerms-driven player roles, no-sleep toggling, and real-time voice chat indicators via [Placeholder API](https://placeholders.pb4.eu/).
 
 Built for [TSNSMP](https://tsnsmp.online) and designed to work alongside any chat/tablist mod that supports Placeholder API.
 
@@ -16,7 +20,7 @@ Players who stream can mark themselves as live directly in-game. A configurable 
 
 - Toggle with `/live`
 - Set your stream URL with `/live link <url>`
-- Optionally keep live status across reconnects with `/live autoLiveOnDisconnect`
+- Keep live status across reconnects with `/live persist`
 
 ### 🎨 Custom Name Colors
 Players can set a personal RGB hex color for their name, rendered wherever the color placeholder is used.
@@ -24,8 +28,17 @@ Players can set a personal RGB hex color for their name, rendered wherever the c
 - Set with `/color <#hex>` — e.g. `/color #ff6b6b` or `/color ff6b6b`
 - Remove with `/color clear`
 
-### 🏷️ Player Roles & Suffixes
-Assign configurable role symbols to players (supporter, owner, member, etc.). Symbols are fully customizable in the config file and exposed as placeholders. Operators can also assign freeform suffix text to any player.
+### 🏷️ Player Roles
+Role symbols are driven by [LuckPerms](https://luckperms.net) — the mod reads each player's primary group and maps it to a configurable symbol via the `roles` section in config. Symbols support full MiniMessage formatting.
+
+LuckPerms is optional: if it isn't installed, `%playerstatus:role%` simply returns empty.
+
+### 📝 Nametag *(operator only)*
+Operators can assign freeform text to appear as a suffix in a player's name.
+
+- `/nametag set <player> <text>` — assign a nametag (max 48 characters)
+- `/nametag get <player>` — view a player's current nametag
+- `/nametag remove <player>` — remove a nametag
 
 ### 💤 No-Sleep
 Players can opt out of night-skipping. When a no-sleep player is online, anyone who tries to sleep sees a warning title/subtitle and a sound cue. The no-sleep player's placeholder shows a ☠ skull indicator.
@@ -38,19 +51,12 @@ When [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) is insta
 | State | Icon |
 |---|---|
 | Speaking | ⌬ |
-| Muted | ⌭ *(currently not working)* |
+| Muted | ⌭ |
 | Deafened | ⌮ |
 | Disconnected | ⌯ |
-| In group | ⌰ *(currently not working)* |
+| In group | ⌰ |
 
 Icons map to a resource pack font — include the bundled resource pack for correct rendering.
-
-### 📝 Suffix System *(operator only)*
-Operators can assign custom text suffixes to any player.
-
-- `/suffix <player> <text>` — set a suffix (max 48 characters)
-- `/suffix get <player>` — view a player's current suffix
-- `/suffix clear <player>` — remove a suffix
 
 ---
 
@@ -60,13 +66,13 @@ Operators can assign custom text suffixes to any player.
 |---|---|---|
 | `/live` | Everyone | Toggle your live status |
 | `/live link <url>` | Everyone | Set your stream URL |
-| `/live autoLiveOnDisconnect` | Everyone | Toggle auto-off on disconnect |
+| `/live persist` | Everyone | Toggle auto-off live status on disconnect |
 | `/color <hex>` | Everyone | Set your name color |
 | `/color clear` | Everyone | Remove your name color |
 | `/nosleep` | Everyone | Toggle no-sleep status |
-| `/suffix <player> <text>` | Operator | Set a player's suffix |
-| `/suffix get <player>` | Operator | Get a player's suffix |
-| `/suffix clear <player>` | Operator | Clear a player's suffix |
+| `/nametag set <player> <text>` | Operator | Assign a nametag to a player |
+| `/nametag get <player>` | Operator | View a player's current nametag |
+| `/nametag remove <player>` | Operator | Remove a player's nametag |
 
 ---
 
@@ -82,7 +88,8 @@ All placeholders are registered with [Placeholder API](https://placeholders.pb4.
 | `%playerstatus:clickable_stream%` | Clickable, hoverable stream link (optional label as argument) |
 | `%playerstatus:coloredname%` | Player's name rendered in their chosen color |
 | `%playerstatus:color%` | Player's chosen hex color value |
-| `%playerstatus:role%` | Player's role symbol (also `%playerstatus:suffix%`) |
+| `%playerstatus:role%` | Role symbol from LuckPerms primary group (requires LuckPerms) |
+| `%playerstatus:suffix%` | Manually assigned nametag text (set via `/nametag`) |
 | `%playerstatus:vc_status%` | Current voice chat status icon |
 | `%playerstatus:nosleep%` | ☠ skull icon if no-sleep is active, empty otherwise |
 
@@ -93,9 +100,10 @@ All placeholders are registered with [Placeholder API](https://placeholders.pb4.
 1. Install [Fabric Loader](https://fabricmc.net/use/installer/) ≥ 0.18.4
 2. Install [Fabric API](https://modrinth.com/mod/fabric-api)
 3. Install [Placeholder API](https://modrinth.com/mod/placeholder-api)
-4. Drop `FantasSmartPlaceholders-1.5.0.jar` into your server's `mods/` folder
-5. *(Optional)* Install [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) for voice status icons
-6. Start the server — a default config is generated at `config/playerstatus/config.json`
+4. Drop `FantasSmartPlaceholders-1.6.0.jar` into your server's `mods/` folder
+5. *(Optional)* Install [LuckPerms](https://luckperms.net) for role placeholder support
+6. *(Optional)* Install [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) for voice status icons
+7. Start the server — a default config is generated at `config/playerstatus/config.json`
 
 ---
 
@@ -110,10 +118,15 @@ Config is generated at `config/playerstatus/config.json` on first launch. All me
   "liveOnMessage": "<green>You are now live!</green>",
   "liveOffMessage": "<yellow>You are no longer live.</yellow>",
   "liveBroadcastMessage": "<gold>{player}</gold> is now live: <aqua><underline><click:open_url:{link}>{link}</click></underline></aqua>",
+  "livePersistOnMessage": "<green>Auto live on reconnect: <bold>ENABLED</bold></green>",
+  "livePersistOffMessage": "<yellow>Auto live on reconnect: <bold>DISABLED</bold></yellow>",
+  "liveLinkSetMessage": "<green>Stream link set to: <white>{link}</white></green>",
   "roles": {
-    "owner": "^",
-    "supporter": "$",
-    "member": ""
+    "owner":     "<gold>[Owner]</gold>",
+    "admin":     "<red>[Admin]</red>",
+    "moderator": "<blue>[Mod]</blue>",
+    "vip":       "<yellow>[VIP]</yellow>",
+    "default":   ""
   },
   "vcSpeakingIcon": "⌬",
   "vcMutedIcon": "⌭",
@@ -121,16 +134,19 @@ Config is generated at `config/playerstatus/config.json` on first launch. All me
   "vcDisconnectedIcon": "⌯",
   "vcGroupIcon": "⌰",
   "noSleepPlaceholder": "<red>☠</red>",
-  "noSleepOnMessage": "<red>You have toggled no-sleep on.</red>",
-  "noSleepOffMessage": "<green>You have toggled no-sleep off.</green>",
+  "noSleepNotPlaceholder": "",
+  "noSleepOnMessage": "<red>You have toggled no-sleep on. Others will be warned when they try to sleep.</red>",
+  "noSleepOffMessage": "<green>You have toggled no-sleep off. Others can sleep peacefully.</green>",
   "noSleepBroadcastOnMessage": "<red>{player} doesn't want to skip the night!</red>",
   "noSleepBroadcastOffMessage": "<green>{player} is now okay with skipping the night.</green>",
   "noSleepBedTitle": "<red>Can't skip the night!</red>",
-  "noSleepBedSubtitle": "<yellow>{players} don't want to sleep!</yellow>"
+  "noSleepBedSubtitle": "<yellow>{players} doesn't want to sleep!</yellow>"
 }
 ```
 
 > **Template tokens:** `{player}` = player's name, `{link}` = stream URL, `{players}` = comma-separated list of no-sleep players.
+
+> **Roles:** Keys must match your LuckPerms group names exactly. Values can be plain text or MiniMessage tags.
 
 ---
 
@@ -142,6 +158,7 @@ Config is generated at `config/playerstatus/config.json` on first launch. All me
 | Fabric Loader | Required | ≥ 0.18.4 |
 | Fabric API | Required | Any |
 | Placeholder API | Required | Any |
+| LuckPerms | Optional | Any |
 | Simple Voice Chat | Optional | Any |
 
 ---
@@ -152,4 +169,14 @@ MIT — see [LICENSE](LICENSE) for details.
 
 ---
 
-*Made by [fantac4t](https://fantacat.net) for [TSNSMP](https://www.tsnsmp.online)*
+## About TSNSMP
+
+This mod was built for **[TSNSMP](https://www.tsnsmp.online)** — a whitelisted, community-driven Minecraft SMP.
+
+> **18+ server.** Minors are not permitted to join unless thoroughly vouched for by existing members.
+
+If you're interested in joining or just want to see the mod in action, check us out at [tsnsmp.online](https://www.tsnsmp.online).
+
+---
+
+*Made by [fantac4t](https://fantacat.net)*

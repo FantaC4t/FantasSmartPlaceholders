@@ -3,7 +3,7 @@ package com.fantac4t.playerstatus;
 import com.fantac4t.playerstatus.commands.ColorCommand;
 import com.fantac4t.playerstatus.commands.LiveCommand;
 import com.fantac4t.playerstatus.commands.NoSleepCommand;
-import com.fantac4t.playerstatus.commands.SuffixCommand;
+import com.fantac4t.playerstatus.commands.NametagCommand;
 import com.fantac4t.playerstatus.config.ModConfig;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
 import com.fantac4t.playerstatus.events.PlayerEvents;
@@ -40,7 +40,7 @@ public class PlayerStatus implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             LiveCommand.register(dispatcher);
             ColorCommand.register(dispatcher);
-            SuffixCommand.register(dispatcher);
+            NametagCommand.register(dispatcher);
             NoSleepCommand.register(dispatcher);
         });
 

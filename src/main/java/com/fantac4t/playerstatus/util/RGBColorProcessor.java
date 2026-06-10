@@ -38,23 +38,6 @@ public final class RGBColorProcessor {
         return input;
     }
     
-    public static String hexToLegacyCode(String hexColor) {
-        hexColor = normalizeColorInput(hexColor);
-        
-        if (hexColor == null || !HEX_PATTERN.matcher(hexColor).matches()) {
-            return "§f";
-        }
-        
-        String hex = hexColor.substring(1);
-        StringBuilder legacyCode = new StringBuilder("§x");
-        
-        for (char c : hex.toCharArray()) {
-            legacyCode.append("§").append(c);
-        }
-        
-        return legacyCode.toString();
-    }
-    
     public static Component getColoredPlayerName(String name, String hexColor) {
         if (hexColor == null || hexColor.isEmpty()) {
             return Component.literal(name);

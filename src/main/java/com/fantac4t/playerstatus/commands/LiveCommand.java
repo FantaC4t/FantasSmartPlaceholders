@@ -10,13 +10,13 @@ public final class LiveCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("live")
             .executes(ctx -> {
-                boolean live = LiveManager.toggleLive(ctx.getSource().getPlayerOrException());
-                return live ? 1 : 0;
+                LiveManager.toggleLive(ctx.getSource().getPlayerOrException());
+                return 1;
             })
-            .then(Commands.literal("autoLiveOnDisconnect")
+            .then(Commands.literal("persist")
                 .executes(ctx -> {
-                    boolean enabled = LiveManager.togglePersist(ctx.getSource().getPlayerOrException());
-                    return enabled ? 1 : 0;
+                    LiveManager.togglePersist(ctx.getSource().getPlayerOrException());
+                    return 1;
                 }))
             .then(Commands.literal("link")
                 .then(Commands.argument("url", StringArgumentType.greedyString())

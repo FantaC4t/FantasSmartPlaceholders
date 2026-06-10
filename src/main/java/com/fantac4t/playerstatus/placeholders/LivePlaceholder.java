@@ -3,10 +3,10 @@ package com.fantac4t.playerstatus.placeholders;
 import com.fantac4t.playerstatus.PlayerStatus;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
 import com.fantac4t.playerstatus.player.LiveManager;
+import com.fantac4t.playerstatus.util.TextUtil;
 import eu.pb4.placeholders.api.PlaceholderContext;
 import eu.pb4.placeholders.api.PlaceholderResult;
 import eu.pb4.placeholders.api.Placeholders;
-import eu.pb4.placeholders.api.parsers.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +30,7 @@ public final class LivePlaceholder {
     public static void register() {
         Placeholders.register(LIVE_ID, (ctx, arg) -> {
             UUID target = resolvePlayerUuid(ctx, arg).orElse(null);
-            return PlaceholderResult.value(parseMini(LiveManager.placeholder(target)));
+            return PlaceholderResult.value(TextUtil.parseMini(LiveManager.placeholder(target)));
         });
 
         Placeholders.register(STREAM_ID, (ctx, arg) -> {
@@ -43,7 +43,7 @@ public final class LivePlaceholder {
         Placeholders.register(LIVE_STREAM_ID, (ctx, arg) -> {
             UUID target = resolvePlayerUuid(ctx, arg).orElse(null);
             if (target == null || !PlayerDataConfig.isLive(target)) return PlaceholderResult.value(Component.empty());
-            Component live = parseMini(LiveManager.placeholder(target));
+            Component live = TextUtil.parseMini(LiveManager.placeholder(target));
             String link = PlayerDataConfig.getLink(target);
             if (link == null || link.isBlank()) return PlaceholderResult.value(live);
             return PlaceholderResult.value(live.copy().append(Component.literal(" " + link)));
@@ -59,7 +59,7 @@ public final class LivePlaceholder {
             String label = (arg != null && !arg.isBlank()) ? arg.trim() : "Watch Stream";
             String hover = "Click to open: " + url;
             String formatted = "<hover:show_text:'" + esc(hover) + "'><click:open_url:'" + esc(url) + "'><aqua><underlined>" + esc(label) + "</underlined></aqua></click></hover>";
-            return PlaceholderResult.value(parseMini(formatted));
+            return PlaceholderResult.value(TextUtil.parseMini(formatted));
         });
     }
 
@@ -85,12 +85,6 @@ public final class LivePlaceholder {
         MinecraftServer server = ((ServerLevel) ctx.player().level()).getServer();
         ServerPlayer target = server.getPlayerList().getPlayerByName(name);
         return target != null ? target.getUUID() : null;
-    }
-
-    private static Component parseMini(String text) {
-        if (text == null || text.isEmpty()) return Component.empty();
-        try { return TagParser.DEFAULT.parseText(text, null); }
-        catch (Throwable t) { return Component.literal(text); }
     }
 
     private static final Pattern HTTP = Pattern.compile("(?i)^https?://.+");

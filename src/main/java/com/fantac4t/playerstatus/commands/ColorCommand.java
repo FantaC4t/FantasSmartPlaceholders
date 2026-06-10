@@ -41,7 +41,6 @@ public final class ColorCommand {
                     var player = ctx.getSource().getPlayerOrException();
                     PlayerDataConfig.clearColor(player.getUUID());
                     ctx.getSource().sendSuccess(() -> Component.literal("Color cleared. Your name is now displayed without color."), false);
-                    player.sendSystemMessage(Component.literal("Color cleared"));
                     return 1;
                 }))
         );

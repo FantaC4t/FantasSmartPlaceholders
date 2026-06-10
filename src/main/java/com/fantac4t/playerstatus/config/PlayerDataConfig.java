@@ -3,17 +3,19 @@ package com.fantac4t.playerstatus.config;
 import com.fantac4t.playerstatus.PlayerStatus;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class PlayerDataConfig {
-    private static final Map<UUID, PlayerData> PLAYER_DATA = new HashMap<>();
+    private static final Map<UUID, PlayerData> PLAYER_DATA = new ConcurrentHashMap<>();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static File PLAYER_DATA_FILE;
-    private static boolean dirty = false;
+    private static volatile boolean dirty = false;
 
     public static void load() {
         File dir = new File("config/playerstatus");
@@ -74,10 +76,10 @@ public final class PlayerDataConfig {
     public static void    setColor(UUID id, String v)  { get(id).color = v; markDirty(); }
     public static void    clearColor(UUID id)          { get(id).color = ""; markDirty(); }
 
-    // ── Suffix ──────────────────────────────────────────────────────
-    public static String  getSuffix(UUID id)           { return get(id).suffix; }
-    public static void    setSuffix(UUID id, String v) { get(id).suffix = v; markDirty(); }
-    public static void    clearSuffix(UUID id)         { get(id).suffix = ""; markDirty(); }
+    // ── Nametag ─────────────────────────────────────────────────────
+    public static String  getNametag(UUID id)           { return get(id).nametag; }
+    public static void    setNametag(UUID id, String v) { get(id).nametag = v; markDirty(); }
+    public static void    clearNametag(UUID id)         { get(id).nametag = ""; markDirty(); }
 
     // ── No-Sleep ────────────────────────────────────────────────────
     public static boolean isNoSleep(UUID id)           { return get(id).noSleep; }
@@ -96,7 +98,7 @@ public final class PlayerDataConfig {
         boolean persist = false;
         String  link    = "";
         String  color   = "";
-        String  suffix  = "";
+        @SerializedName("suffix") String nametag = "";
         boolean noSleep = false;
     }
 }

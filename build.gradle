@@ -11,6 +11,7 @@ repositories {
     maven { url "https://maven.nucleoid.xyz" }
     maven { url "https://maven.fabricmc.net" }
     maven { url "https://maven.maxhenkel.de/repository/public" }
+    maven { url "https://repo.lucko.me/" }
 }
 
 dependencies {
@@ -24,6 +25,9 @@ dependencies {
 
     // Simple Voice Chat API — compile-only, present at runtime via the installed mod
     compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
+
+    // LuckPerms API — compile-only, soft-depend at runtime
+    compileOnly "net.luckperms:api:5.4"
 }
 
 tasks.withType(JavaCompile).configureEach {
