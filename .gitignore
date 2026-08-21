@@ -26,8 +26,9 @@ bin/
 .DS_Store
 Thumbs.db
 
-# Compiled output (keep libs/ out — distribute via releases)
-libs/
+# Stonecutter — version subproject build dirs are covered by build/ above.
+# stonecutter.gradle is intentionally tracked (Stonecutter manages active version there).
+versions/*/src/
 
-# Local changelog (maintained outside repo)
+# Changelog (maintained outside repo)
 CHANGELOG.md

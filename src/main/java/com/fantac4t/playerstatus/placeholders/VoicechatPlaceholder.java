@@ -14,7 +14,11 @@ public final class VoicechatPlaceholder {
             Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "vc_status");
 
     public static void register() {
-        Placeholders.register(VC_STATUS_ID, (ctx, arg) -> {
+        //? if mc26 {
+        Placeholders.registerServer(VC_STATUS_ID, (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(VC_STATUS_ID, (ctx, arg) -> {
+        *///?}
             if (!ctx.hasPlayer()) return PlaceholderResult.value("");
             UUID uuid = ctx.player().getUUID();
 

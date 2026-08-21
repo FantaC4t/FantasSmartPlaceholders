@@ -64,7 +64,11 @@ public final class NoSleepManager {
             sleeper.connection.send(new ClientboundSoundPacket(
                     Holder.direct(SoundEvents.VILLAGER_NO), SoundSource.MASTER,
                     sleeper.getX(), sleeper.getY(), sleeper.getZ(),
-                    1.0f, 1.0f, sleeper.level().random.nextLong()
+                    //? if mc26 {
+                    1.0f, 1.0f, sleeper.getRandom().nextLong()
+                    //?} else {
+                    /*1.0f, 1.0f, sleeper.level().random.nextLong()
+                    *///?}
             ));
         });
     }

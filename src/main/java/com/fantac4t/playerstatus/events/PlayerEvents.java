@@ -5,6 +5,11 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 
 public final class PlayerEvents {
     public static void register() {
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            var player = handler.getPlayer();
+            PlayerDataConfig.setStoredName(player.getUUID(), player.getName().getString());
+        });
+
         ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
             var id = handler.getPlayer().getUUID();
 

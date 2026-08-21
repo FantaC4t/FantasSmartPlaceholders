@@ -1,10 +1,21 @@
 plugins {
     id "fabric-loom" version "${loom_version}"
+    id "dev.kikugie.stonecutter"
 }
 
 group   = maven_group
-version = mod_version
+version = "${mod_version}+${minecraft_version}"
 base { archivesName = archives_base_name }
+
+if (stonecutter.current.version.startsWith("26.")) {
+    loom.noIntermediateMappings()
+    loom.useIntermediateMappings = false
+    // remapSourcesJar chokes on the identity mapping's empty intermediary namespace;
+    // the plain sourcesJar is already in named namespace, so remapping is a no-op anyway.
+    tasks.named("remapSourcesJar") { enabled = false }
+}
+
+stonecutter.const("mc26", stonecutter.current.version.startsWith("26."))
 
 repositories {
     mavenCentral()
@@ -16,34 +27,55 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    // MC 26.x ships unobfuscated — identity mapping (empty tiny v2). Older versions use official Mojang mappings.
+    if (stonecutter.current.version.startsWith("26.")) {
+        mappings loom.layered { mappings(rootProject.file("identity.tiny")) }
+    } else {
+        mappings loom.officialMojangMappings()
+    }
+    if (stonecutter.current.version.startsWith("26.")) {
+        // MC 26.x is unobfuscated — JARs are already in named namespace, no remapping needed.
+        // Use plain implementation so Loom doesn't try to remap them through intermediary.
+        // placeholder-api is a required mod dep for 26.x; not bundled (no JiJ for unobfuscated builds).
+        implementation "net.fabricmc:fabric-loader:${loader_version}"
+        implementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+        implementation "eu.pb4:placeholder-api:${placeholder_api_version}"
+    } else {
+        modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+        modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+        modImplementation "eu.pb4:placeholder-api:${placeholder_api_version}"
+        include          "eu.pb4:placeholder-api:${placeholder_api_version}"
+    }
 
-    modImplementation "eu.pb4:placeholder-api:2.8.1+1.21.10"
-    include          "eu.pb4:placeholder-api:2.8.1+1.21.10"
-
-    // Simple Voice Chat API — compile-only, present at runtime via the installed mod
+    // compile-only for both versions — present at runtime via installed mod
     compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
-
-    // LuckPerms API — compile-only, soft-depend at runtime
     compileOnly "net.luckperms:api:5.4"
 }
 
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 21
+// MC 26.x requires Java 25; older versions use 21
+def javaVersion = stonecutter.current.version.startsWith("26.") ? 25 : 21
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(javaVersion)
+    }
+    withSourcesJar()
 }
 
-java { withSourcesJar() }
+tasks.withType(JavaCompile).configureEach {
+    it.options.release = javaVersion
+}
 
 processResources {
     inputs.property "version",           version
     inputs.property "minecraft_version", minecraft_version
     inputs.property "loader_version",    loader_version
+    inputs.property "minecraft_dep",     minecraft_dep
 
     filesMatching("fabric.mod.json") {
         expand "version":           version,
                "minecraft_version": minecraft_version,
-               "loader_version":    loader_version
+               "loader_version":    loader_version,
+               "minecraft_dep":     minecraft_dep
     }
 }

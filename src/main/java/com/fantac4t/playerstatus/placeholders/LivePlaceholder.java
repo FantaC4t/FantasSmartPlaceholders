@@ -13,34 +13,53 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 
-import java.net.URI;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.regex.Pattern;
 
 public final class LivePlaceholder {
 
-    private static final Identifier LIVE_ID          = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live");
-    private static final Identifier STREAM_ID        = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "stream");
-    private static final Identifier LIVE_STREAM_ID   = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live_stream");
+    private static final Identifier LIVE_ID             = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live");
+    private static final Identifier STREAM_ID           = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "stream");
+    private static final Identifier LIVE_STREAM_ID      = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live_stream");
     private static final Identifier CLICKABLE_STREAM_ID = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "clickable_stream");
+    private static final Identifier LIVE_COUNT_ID       = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live_count");
 
     private LivePlaceholder() {}
 
     public static void register() {
-        Placeholders.register(LIVE_ID, (ctx, arg) -> {
+        //? if mc26 {
+        Placeholders.registerServer(LIVE_ID, (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(LIVE_ID, (ctx, arg) -> {
+        *///?}
             UUID target = resolvePlayerUuid(ctx, arg).orElse(null);
-            return PlaceholderResult.value(TextUtil.parseMini(LiveManager.placeholder(target)));
+            if (target == null) return PlaceholderResult.value(Component.empty());
+            String badge = LiveManager.placeholder(target);
+            if (badge.isBlank()) return PlaceholderResult.value(Component.empty());
+            String url = TextUtil.normalizeUrl(PlayerDataConfig.getLink(target));
+            if (url != null) {
+                String mini = "<hover:show_text:'<gray>Click to open: " + esc(url) + "</gray>'><click:open_url:'" + esc(url) + "'>" + badge + "</click></hover>";
+                return PlaceholderResult.value(TextUtil.parseMini(mini));
+            }
+            return PlaceholderResult.value(TextUtil.parseMini(badge));
         });
 
-        Placeholders.register(STREAM_ID, (ctx, arg) -> {
+        //? if mc26 {
+        Placeholders.registerServer(STREAM_ID, (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(STREAM_ID, (ctx, arg) -> {
+        *///?}
             UUID target = resolvePlayerUuid(ctx, arg).orElse(null);
             if (target == null || !PlayerDataConfig.isLive(target)) return PlaceholderResult.value(Component.empty());
             String link = PlayerDataConfig.getLink(target);
             return PlaceholderResult.value(link == null || link.isBlank() ? Component.empty() : Component.literal(link));
         });
 
-        Placeholders.register(LIVE_STREAM_ID, (ctx, arg) -> {
+        //? if mc26 {
+        Placeholders.registerServer(LIVE_STREAM_ID, (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(LIVE_STREAM_ID, (ctx, arg) -> {
+        *///?}
             UUID target = resolvePlayerUuid(ctx, arg).orElse(null);
             if (target == null || !PlayerDataConfig.isLive(target)) return PlaceholderResult.value(Component.empty());
             Component live = TextUtil.parseMini(LiveManager.placeholder(target));
@@ -49,16 +68,33 @@ public final class LivePlaceholder {
             return PlaceholderResult.value(live.copy().append(Component.literal(" " + link)));
         });
 
-        Placeholders.register(CLICKABLE_STREAM_ID, (ctx, arg) -> {
+        //? if mc26 {
+        Placeholders.registerServer(LIVE_COUNT_ID, (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(LIVE_COUNT_ID, (ctx, arg) -> {
+        *///?}
+            if (ctx == null || ctx.player() == null) return PlaceholderResult.value(Component.literal("0"));
+            MinecraftServer server = ((ServerLevel) ctx.player().level()).getServer();
+            long count = server.getPlayerList().getPlayers().stream()
+                .filter(p -> PlayerDataConfig.isLive(p.getUUID()))
+                .count();
+            return PlaceholderResult.value(Component.literal(String.valueOf(count)));
+        });
+
+        //? if mc26 {
+        Placeholders.registerServer(CLICKABLE_STREAM_ID, (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(CLICKABLE_STREAM_ID, (ctx, arg) -> {
+        *///?}
             UUID target = resolvePlayerUuid(ctx, arg).orElse(null);
             if (target == null || !PlayerDataConfig.isLive(target)) return PlaceholderResult.value(Component.empty());
 
-            String url = normalizeUrl(PlayerDataConfig.getLink(target));
+            String url = TextUtil.normalizeUrl(PlayerDataConfig.getLink(target));
             if (url == null) return PlaceholderResult.value(Component.empty());
 
             String label = (arg != null && !arg.isBlank()) ? arg.trim() : "Watch Stream";
-            String hover = "Click to open: " + url;
-            String formatted = "<hover:show_text:'" + esc(hover) + "'><click:open_url:'" + esc(url) + "'><aqua><underlined>" + esc(label) + "</underlined></aqua></click></hover>";
+            String hover = "<gray>Click to open: " + esc(url) + "</gray>";
+            String formatted = "<hover:show_text:'" + hover + "'><click:open_url:'" + esc(url) + "'><aqua><underlined>" + esc(label) + "</underlined></aqua></click></hover>";
             return PlaceholderResult.value(TextUtil.parseMini(formatted));
         });
     }
@@ -85,16 +121,6 @@ public final class LivePlaceholder {
         MinecraftServer server = ((ServerLevel) ctx.player().level()).getServer();
         ServerPlayer target = server.getPlayerList().getPlayerByName(name);
         return target != null ? target.getUUID() : null;
-    }
-
-    private static final Pattern HTTP = Pattern.compile("(?i)^https?://.+");
-
-    private static String normalizeUrl(String s) {
-        if (s == null) return null;
-        String t = s.trim();
-        if (t.isEmpty()) return null;
-        if (!HTTP.matcher(t).matches()) t = "https://" + t;
-        try { URI.create(t); return t; } catch (Exception e) { return null; }
     }
 
     private static String esc(String s) {

@@ -11,7 +11,11 @@ import net.minecraft.resources.Identifier;
 public final class ColorPlaceholders {
     public static void register() {
         // IMPORTANT: Use "coloredname" without underscore to match decompiled version
-        Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "coloredname"), (ctx, arg) -> {
+        //? if mc26 {
+        Placeholders.registerServer(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "coloredname"), (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "coloredname"), (ctx, arg) -> {
+        *///?}
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.value(Component.empty());
             }
@@ -20,8 +24,12 @@ public final class ColorPlaceholders {
                 ctx.player().getName().getString(), color
             ));
         });
-        
-        Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "color"), (ctx, arg) -> {
+
+        //? if mc26 {
+        Placeholders.registerServer(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "color"), (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "color"), (ctx, arg) -> {
+        *///?}
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.value("");
             }

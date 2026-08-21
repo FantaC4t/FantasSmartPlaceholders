@@ -1,11 +1,36 @@
 pluginManagement {
     repositories {
-        maven { 
-            name = "Fabric"
-            url = "https://maven.fabricmc.net/" 
-        }
+        maven { name = "Fabric";      url = "https://maven.fabricmc.net/" }
+        maven { name = "Stonecutter"; url = "https://maven.kikugie.dev/releases" }
         gradlePluginPortal()
     }
+}
+
+plugins {
+    id "dev.kikugie.stonecutter" version "0.5.1"
+    id "org.gradle.toolchains.foojay-resolver-convention" version "0.9.0"
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+//  Multi-version setup.  To add a new MC version:
+//    1. Add the version string to the `versions` list below.
+//    2. Create versions/<new-mc-version>/gradle.properties with the
+//       correct dependency strings for that version.
+//    3. Run `./gradlew "Switch active version to <new-mc-version>"` to
+//       switch your IDE / VCS working tree to it.
+//    4. Build all versions at once with: ./gradlew chiseledBuild
+//
+//  vcsVersion: the version your git working tree targets day-to-day.
+// ─────────────────────────────────────────────────────────────────────────
+stonecutter.kotlinController = false
+stonecutter.centralScript = "build.gradle"
+
+stonecutter {
+    shared {
+        versions "1.21.11", "26.1", "26.2"
+        vcsVersion = "26.1"
+    }
+    create rootProject
 }
 
 rootProject.name = "FantasSmartPlaceholders"

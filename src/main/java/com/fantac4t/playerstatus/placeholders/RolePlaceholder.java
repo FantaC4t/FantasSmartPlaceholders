@@ -19,8 +19,13 @@ public final class RolePlaceholder {
     private static final Identifier NAMETAG_ID = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "suffix");
 
     public static void register() {
-        Placeholders.register(ROLE_ID,    (ctx, arg) -> roleResult(ctx));
+        //? if mc26 {
+        Placeholders.registerServer(ROLE_ID,    (ctx, arg) -> roleResult(ctx));
+        Placeholders.registerServer(NAMETAG_ID, (ctx, arg) -> nametagResult(ctx));
+        //?} else {
+        /*Placeholders.register(ROLE_ID,    (ctx, arg) -> roleResult(ctx));
         Placeholders.register(NAMETAG_ID, (ctx, arg) -> nametagResult(ctx));
+        *///?}
     }
 
     private static PlaceholderResult roleResult(PlaceholderContext ctx) {

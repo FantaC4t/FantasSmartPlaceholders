@@ -81,6 +81,27 @@ public final class PlayerDataConfig {
     public static void    setNametag(UUID id, String v) { get(id).nametag = v; markDirty(); }
     public static void    clearNametag(UUID id)         { get(id).nametag = ""; markDirty(); }
 
+    // ── Twitch ──────────────────────────────────────────────────────
+    public static String  getTwitchChannel(UUID id)           { return get(id).twitchChannel; }
+    public static void    setTwitchChannel(UUID id, String v) { get(id).twitchChannel = v; markDirty(); }
+    public static void    clearTwitchChannel(UUID id)         { get(id).twitchChannel = ""; markDirty(); }
+
+    // ── Lore ────────────────────────────────────────────────────────
+    public static String  getLore(UUID id)             { return get(id).lore; }
+    public static void    setLore(UUID id, String v)   { get(id).lore = v; markDirty(); }
+    public static void    clearLore(UUID id)           { get(id).lore = ""; markDirty(); }
+
+    // ── Stored name (for offline profile lookup) ─────────────────────
+    public static String  getStoredName(UUID id)           { return get(id).storedName; }
+    public static void    setStoredName(UUID id, String v) { get(id).storedName = v; markDirty(); }
+
+    public static Optional<UUID> findUuidByName(String name) {
+        for (Map.Entry<UUID, PlayerData> e : PLAYER_DATA.entrySet()) {
+            if (name.equalsIgnoreCase(e.getValue().storedName)) return Optional.of(e.getKey());
+        }
+        return Optional.empty();
+    }
+
     // ── No-Sleep ────────────────────────────────────────────────────
     public static boolean isNoSleep(UUID id)           { return get(id).noSleep; }
     public static void    setNoSleep(UUID id, boolean v){ get(id).noSleep = v; markDirty(); }
@@ -93,12 +114,24 @@ public final class PlayerDataConfig {
         return result;
     }
 
+    public static Map<UUID, String> getNametaggedPlayers() {
+        Map<UUID, String> result = new LinkedHashMap<>();
+        for (Map.Entry<UUID, PlayerData> entry : PLAYER_DATA.entrySet()) {
+            String tag = entry.getValue().nametag;
+            if (tag != null && !tag.isBlank()) result.put(entry.getKey(), tag);
+        }
+        return result;
+    }
+
     private static class PlayerData {
-        boolean isLive  = false;
-        boolean persist = false;
-        String  link    = "";
-        String  color   = "";
+        boolean isLive       = false;
+        boolean persist      = false;
+        String  link         = "";
+        String  color        = "";
         @SerializedName("suffix") String nametag = "";
-        boolean noSleep = false;
+        boolean noSleep      = false;
+        String  twitchChannel = "";
+        String  lore          = "";
+        String  storedName    = "";
     }
 }

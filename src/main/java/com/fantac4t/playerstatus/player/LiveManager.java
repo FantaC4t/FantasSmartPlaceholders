@@ -2,6 +2,7 @@ package com.fantac4t.playerstatus.player;
 
 import com.fantac4t.playerstatus.PlayerStatus;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
+import com.fantac4t.playerstatus.twitch.TwitchManager;
 import com.fantac4t.playerstatus.util.TextUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
@@ -49,8 +50,35 @@ public final class LiveManager {
     }
 
     public static void setLink(ServerPlayer player, String link) {
-        PlayerDataConfig.setLink(player.getUUID(), link);
+        UUID id = player.getUUID();
+        PlayerDataConfig.setLink(id, link);
+        String channel = extractTwitchChannel(link);
+        if (channel != null) {
+            PlayerDataConfig.setTwitchChannel(id, channel);
+        } else {
+            PlayerDataConfig.clearTwitchChannel(id);
+        }
         sendTemplate(player, PlayerStatus.CONFIG.liveLinkSetMessage);
+        if (channel != null && !TwitchManager.isConfigured()) {
+            sendTemplate(player, PlayerStatus.CONFIG.liveLinkTwitchNotConfiguredMessage);
+        }
+    }
+
+    public static void clearLink(ServerPlayer player) {
+        PlayerDataConfig.setLink(player.getUUID(), "");
+        PlayerDataConfig.clearTwitchChannel(player.getUUID());
+    }
+
+    private static String extractTwitchChannel(String url) {
+        if (url == null || url.isBlank()) return null;
+        int idx = url.toLowerCase().indexOf("twitch.tv/");
+        if (idx < 0) return null;
+        String rest = url.substring(idx + "twitch.tv/".length()).toLowerCase();
+        int slash = rest.indexOf('/');
+        if (slash >= 0) rest = rest.substring(0, slash);
+        int query = rest.indexOf('?');
+        if (query >= 0) rest = rest.substring(0, query);
+        return rest.isBlank() ? null : rest;
     }
 
     private static void broadcast(MinecraftServer server, ServerPlayer source, String template) {
@@ -87,9 +115,10 @@ public final class LiveManager {
         while (m.find()) {
             if (m.start() > last) sb.append(input, last, m.start());
             String url = input.substring(m.start(), m.end());
-            sb.append("<aqua><underlined><click:open_url:'")
-              .append(url).append("'>").append(url)
-              .append("</click></underlined></aqua>");
+            sb.append("<hover:show_text:'<gray>Click to open: ").append(url).append("</gray>'>")
+              .append("<click:open_url:'").append(url).append("'>")
+              .append("<aqua><underlined>").append(url).append("</underlined></aqua>")
+              .append("</click></hover>");
             last = m.end();
         }
 

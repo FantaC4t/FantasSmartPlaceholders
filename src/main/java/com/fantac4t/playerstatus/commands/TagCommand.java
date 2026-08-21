@@ -9,15 +9,19 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permissions;
 
-public final class NametagCommand {
+import java.util.Map;
+import java.util.UUID;
+
+public final class TagCommand {
 
     private static final int MAX_LENGTH = 48;
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
-        dispatcher.register(Commands.literal("nametag")
+        dispatcher.register(Commands.literal("tag")
                 .requires(src -> src.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER))
                 .then(Commands.literal("set")
                         .then(Commands.argument("player", EntityArgument.player())
@@ -57,7 +61,7 @@ public final class NametagCommand {
                                             .append(Component.literal(": ").withStyle(ChatFormatting.GRAY))
                                             .append(hasTag
                                                     ? Component.literal(suf).withStyle(ChatFormatting.WHITE)
-                                                    : Component.literal("<none>").withStyle(ChatFormatting.DARK_GRAY));
+                                                    : Component.literal("<none>").withStyle(ChatFormatting.GRAY));
 
                                     ctx.getSource().sendSuccess(() -> msg, false);
                                     return 1;
@@ -78,6 +82,36 @@ public final class NametagCommand {
                                     return 1;
                                 })
                         )
+                )
+                .then(Commands.literal("list")
+                        .executes(ctx -> {
+                            Map<UUID, String> tagged = PlayerDataConfig.getNametaggedPlayers();
+                            if (tagged.isEmpty()) {
+                                ctx.getSource().sendSuccess(
+                                    () -> Component.literal("No players have a custom nametag set.").withStyle(ChatFormatting.GRAY),
+                                    false);
+                                return 1;
+                            }
+
+                            MinecraftServer server = ctx.getSource().getServer();
+                            ctx.getSource().sendSuccess(
+                                () -> Component.literal("── Custom Nametags (" + tagged.size() + ") ──").withStyle(ChatFormatting.GRAY),
+                                false);
+
+                            for (Map.Entry<UUID, String> entry : tagged.entrySet()) {
+                                UUID uuid = entry.getKey();
+                                String tag = entry.getValue();
+                                ServerPlayer online = server.getPlayerList().getPlayer(uuid);
+                                String name = online != null ? online.getName().getString() : uuid.toString();
+                                ctx.getSource().sendSuccess(
+                                    () -> Component.literal(" ")
+                                            .append(Component.literal(name).withStyle(ChatFormatting.YELLOW))
+                                            .append(Component.literal(": ").withStyle(ChatFormatting.GRAY))
+                                            .append(Component.literal(tag).withStyle(ChatFormatting.WHITE)),
+                                    false);
+                            }
+                            return 1;
+                        })
                 )
         );
     }

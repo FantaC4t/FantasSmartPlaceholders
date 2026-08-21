@@ -17,10 +17,12 @@ public final class ModConfig {
     public String notLivePlaceholder = "";
     public String liveOnMessage = "<green>You are now live!</green>";
     public String liveOffMessage = "<yellow>You are no longer live.</yellow>";
-    public String liveBroadcastMessage = "<gold>{player}</gold> is now live: <aqua><underline><click:open_url:{link}>{link}</click></underline></aqua>";
+    public String liveBroadcastMessage = "<gold>{player}</gold> is now live: <aqua><underline><click:open_url:'{link}'>{link}</click></underline></aqua>";
     public String livePersistOnMessage  = "<green>Auto live on reconnect: <bold>ENABLED</bold></green>";
     public String livePersistOffMessage = "<yellow>Auto live on reconnect: <bold>DISABLED</bold></yellow>";
     public String liveLinkSetMessage    = "<green>Stream link set to: <white>{link}</white></green>";
+    public String liveLinkTwitchNotConfiguredMessage =
+        "<yellow>Note: this server hasn't set up Twitch auto-detection, so your live status won't update automatically. Use <white>/live</white> to toggle it yourself.</yellow>";
 
     public Map<String, String> roles = new HashMap<>();
 
@@ -38,6 +40,11 @@ public final class ModConfig {
     public String noSleepBroadcastOffMessage = "<green>{player} is now okay with skipping the night.</green>";
     public String noSleepBedTitle = "<red>Can't skip the night!</red>";
     public String noSleepBedSubtitle = "<yellow>{players} doesn't want to sleep!</yellow>";
+
+    // ── Twitch auto-detect ──────────────────────────────────────────
+    public String twitchClientId     = "";
+    public String twitchClientSecret = "";
+    public int    twitchPollIntervalSeconds = 60;
 
     public ModConfig() {
         roles.put("owner",     "<gold>[Owner]</gold>");

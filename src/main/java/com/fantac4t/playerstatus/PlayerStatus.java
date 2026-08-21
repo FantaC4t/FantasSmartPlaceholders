@@ -1,9 +1,14 @@
 package com.fantac4t.playerstatus;
 
 import com.fantac4t.playerstatus.commands.ColorCommand;
+import com.fantac4t.playerstatus.commands.FeaturesCommand;
+import com.fantac4t.playerstatus.commands.FspCommand;
 import com.fantac4t.playerstatus.commands.LiveCommand;
+import com.fantac4t.playerstatus.commands.LoreCommand;
 import com.fantac4t.playerstatus.commands.NoSleepCommand;
-import com.fantac4t.playerstatus.commands.NametagCommand;
+import com.fantac4t.playerstatus.commands.TagCommand;
+import com.fantac4t.playerstatus.commands.ProfileCommand;
+import com.fantac4t.playerstatus.twitch.TwitchManager;
 import com.fantac4t.playerstatus.config.ModConfig;
 import com.fantac4t.playerstatus.config.PlayerDataConfig;
 import com.fantac4t.playerstatus.events.PlayerEvents;
@@ -40,14 +45,21 @@ public class PlayerStatus implements ModInitializer {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             LiveCommand.register(dispatcher);
             ColorCommand.register(dispatcher);
-            NametagCommand.register(dispatcher);
+            TagCommand.register(dispatcher);
             NoSleepCommand.register(dispatcher);
+            FspCommand.register(dispatcher);
+            LoreCommand.register(dispatcher);
+            ProfileCommand.register(dispatcher);
+            FeaturesCommand.register(dispatcher);
         });
 
         PlayerEvents.register();
         NoSleepManager.registerBedEvent();
 
+        ServerLifecycleEvents.SERVER_STARTED.register(TwitchManager::start);
+
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            TwitchManager.stop();
             PlayerDataConfig.save();
         });
 

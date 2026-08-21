@@ -17,7 +17,11 @@ public final class NoSleepPlaceholder {
     private NoSleepPlaceholder() {}
 
     public static void register() {
-        Placeholders.register(NOSLEEP_ID, (ctx, arg) -> {
+        //? if mc26 {
+        Placeholders.registerServer(NOSLEEP_ID, (ctx, arg) -> {
+        //?} else {
+        /*Placeholders.register(NOSLEEP_ID, (ctx, arg) -> {
+        *///?}
             UUID target = null;
 
             if (arg != null && !arg.isEmpty()) {
