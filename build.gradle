@@ -4,7 +4,10 @@ plugins {
 }
 
 group   = maven_group
-version = "${mod_version}+${minecraft_version}"
+// jar_mc_label lets a version override its displayed MC-version suffix (e.g. "26.x" to signal
+// it covers the whole 26.x line) without touching minecraft_version, which must stay a real,
+// resolvable Mojang version since it's also used for the actual Minecraft dependency below.
+version = "${mod_version}+${project.findProperty('jar_mc_label') ?: minecraft_version}"
 base { archivesName = archives_base_name }
 
 if (stonecutter.current.version.startsWith("26.")) {
