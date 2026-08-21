@@ -10,7 +10,7 @@ import java.util.Map;
 
 public final class ModConfig {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final File CONFIG_DIR = new File("config/playerstatus");
+    private static final File CONFIG_DIR = new File("config/Fanta's Placeholders");
     private static final File CONFIG_FILE = new File(CONFIG_DIR, "config.json");
 
     public String livePlaceholder = "<red><bold>LIVE</bold></red>";

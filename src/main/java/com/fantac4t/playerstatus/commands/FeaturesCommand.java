@@ -52,20 +52,20 @@ public final class FeaturesCommand {
     private static void sendPlaceholders(CommandSourceStack src) {
         send(src, header());
         send(src, section("Live"));
-        send(src, ph("%playerstatus:live%",             "the live badge — clickable link to the player's stream if one is set, otherwise plain text"));
-        send(src, ph("%playerstatus:stream%",           "the player's raw stream link, empty if not live or no link set"));
-        send(src, ph("%playerstatus:live_stream%",      "live badge and stream link combined in one placeholder"));
-        send(src, ph("%playerstatus:clickable_stream%", "underlined clickable link with hover text; optional arg sets the label, e.g. %playerstatus:clickable_stream:Watch Now%"));
-        send(src, ph("%playerstatus:live_count%",       "number of players currently online and marked live"));
+        send(src, ph("%fsp:live%",             "the live badge — clickable link to the player's stream if one is set, otherwise plain text"));
+        send(src, ph("%fsp:stream%",           "the player's raw stream link, empty if not live or no link set"));
+        send(src, ph("%fsp:live_stream%",      "live badge and stream link combined in one placeholder"));
+        send(src, ph("%fsp:clickable_stream%", "underlined clickable link with hover text; optional arg sets the label, e.g. %fsp:clickable_stream:Watch Now%"));
+        send(src, ph("%fsp:live_count%",       "number of players currently online and marked live"));
         send(src, section("Color"));
-        send(src, ph("%playerstatus:coloredname%",      "the player's name rendered in their set color or gradient"));
-        send(src, ph("%playerstatus:color%",            "the player's raw color value (hex or gradient string)"));
+        send(src, ph("%fsp:coloredname%",      "the player's name rendered in their set color or gradient"));
+        send(src, ph("%fsp:color%",            "the player's raw color value (hex or gradient string)"));
         send(src, section("Identity"));
-        send(src, ph("%playerstatus:role%",             "the player's LuckPerms primary group mapped to a configured symbol"));
-        send(src, ph("%playerstatus:suffix%",           "the player's custom nametag suffix text, if any"));
+        send(src, ph("%fsp:role%",             "the player's LuckPerms primary group mapped to a configured symbol"));
+        send(src, ph("%fsp:suffix%",           "the player's custom nametag suffix text, if any"));
         send(src, section("Misc"));
-        send(src, ph("%playerstatus:nosleep%",          "the no-sleep icon, shown only while the player has it toggled on"));
-        send(src, ph("%playerstatus:vc_status%",        "the player's current voice chat state icon (speaking, muted, deafened, etc.)"));
+        send(src, ph("%fsp:nosleep%",          "the no-sleep icon, shown only while the player has it toggled on"));
+        send(src, ph("%fsp:vc_status%",        "the player's current voice chat state icon (speaking, muted, deafened, etc.)"));
         send(src, parse("<gray><italic><click:run_command:'/features'>← Back to commands → /features</click></italic></gray>"));
     }
 

@@ -15,8 +15,8 @@ import java.util.UUID;
 
 public final class RolePlaceholder {
 
-    private static final Identifier ROLE_ID    = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "role");
-    private static final Identifier NAMETAG_ID = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "suffix");
+    private static final Identifier ROLE_ID    = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "role");
+    private static final Identifier NAMETAG_ID = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "suffix");
 
     public static void register() {
         //? if mc26 {

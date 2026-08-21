@@ -12,9 +12,9 @@ public final class ColorPlaceholders {
     public static void register() {
         // IMPORTANT: Use "coloredname" without underscore to match decompiled version
         //? if mc26 {
-        Placeholders.registerServer(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "coloredname"), (ctx, arg) -> {
+        Placeholders.registerServer(Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "coloredname"), (ctx, arg) -> {
         //?} else {
-        /*Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "coloredname"), (ctx, arg) -> {
+        /*Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "coloredname"), (ctx, arg) -> {
         *///?}
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.value(Component.empty());
@@ -26,9 +26,9 @@ public final class ColorPlaceholders {
         });
 
         //? if mc26 {
-        Placeholders.registerServer(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "color"), (ctx, arg) -> {
+        Placeholders.registerServer(Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "color"), (ctx, arg) -> {
         //?} else {
-        /*Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "color"), (ctx, arg) -> {
+        /*Placeholders.register(Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "color"), (ctx, arg) -> {
         *///?}
             if (!ctx.hasPlayer()) {
                 return PlaceholderResult.value("");

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "playerstatus",
+  "id": "fanta-smart-placeholders",
   "version": "${version}",
   "name": "Fanta's Smart Placeholders",
   "description": "Smart placeholders and player features: live status, name colors, roles, no-sleep, and voice chat integration.",
@@ -13,7 +13,7 @@
     "issues":   "https://github.com/fantac4t/FantasSmartPlaceholders/issues"
   },
   "license": "MIT",
-  "icon": "assets/playerstatus/icon.png",
+  "icon": "assets/fanta-smart-placeholders/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [

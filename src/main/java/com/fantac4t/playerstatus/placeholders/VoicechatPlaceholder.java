@@ -11,7 +11,7 @@ import java.util.UUID;
 public final class VoicechatPlaceholder {
 
     private static final Identifier VC_STATUS_ID =
-            Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "vc_status");
+            Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "vc_status");
 
     public static void register() {
         //? if mc26 {

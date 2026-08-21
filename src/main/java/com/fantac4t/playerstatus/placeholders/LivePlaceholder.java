@@ -18,11 +18,11 @@ import java.util.UUID;
 
 public final class LivePlaceholder {
 
-    private static final Identifier LIVE_ID             = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live");
-    private static final Identifier STREAM_ID           = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "stream");
-    private static final Identifier LIVE_STREAM_ID      = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live_stream");
-    private static final Identifier CLICKABLE_STREAM_ID = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "clickable_stream");
-    private static final Identifier LIVE_COUNT_ID       = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "live_count");
+    private static final Identifier LIVE_ID             = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "live");
+    private static final Identifier STREAM_ID           = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "stream");
+    private static final Identifier LIVE_STREAM_ID      = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "live_stream");
+    private static final Identifier CLICKABLE_STREAM_ID = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "clickable_stream");
+    private static final Identifier LIVE_COUNT_ID       = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "live_count");
 
     private LivePlaceholder() {}
 

@@ -18,7 +18,7 @@ public final class PlayerDataConfig {
     private static volatile boolean dirty = false;
 
     public static void load() {
-        File dir = new File("config/playerstatus");
+        File dir = new File("config/Fanta's Placeholders");
         if (!dir.exists()) dir.mkdirs();
         PLAYER_DATA_FILE = new File(dir, "player_data.json");
         if (!PLAYER_DATA_FILE.exists()) return;

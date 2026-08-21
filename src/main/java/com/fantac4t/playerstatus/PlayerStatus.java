@@ -25,7 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PlayerStatus implements ModInitializer {
-    public static final String MOD_ID = "playerstatus";
+    public static final String MOD_ID = "fanta-smart-placeholders";
+    public static final String PLACEHOLDER_NS = "fsp";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static ModConfig CONFIG;

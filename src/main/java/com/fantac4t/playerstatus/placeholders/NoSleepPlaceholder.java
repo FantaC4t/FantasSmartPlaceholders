@@ -12,7 +12,7 @@ import java.util.UUID;
 
 public final class NoSleepPlaceholder {
 
-    private static final Identifier NOSLEEP_ID = Identifier.fromNamespaceAndPath(PlayerStatus.MOD_ID, "nosleep");
+    private static final Identifier NOSLEEP_ID = Identifier.fromNamespaceAndPath(PlayerStatus.PLACEHOLDER_NS, "nosleep");
 
     private NoSleepPlaceholder() {}
 

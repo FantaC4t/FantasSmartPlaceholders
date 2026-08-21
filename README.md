@@ -54,17 +54,17 @@ Forget all of the above and just run `/features` in-game — it lists every comm
 
 | Placeholder | Value |
 |---|---|
-| `%playerstatus:live%` | LIVE badge, clickable if a link is set |
-| `%playerstatus:stream%` | raw stream URL, empty if not live |
-| `%playerstatus:live_stream%` | badge + URL together |
-| `%playerstatus:clickable_stream%` | underlined clickable link with hover text, optional label arg |
-| `%playerstatus:live_count%` | how many online players are live |
-| `%playerstatus:coloredname%` | name in the player's set color/gradient |
-| `%playerstatus:color%` | raw color value |
-| `%playerstatus:role%` | LuckPerms role symbol |
-| `%playerstatus:suffix%` | nametag suffix text |
-| `%playerstatus:vc_status%` | voice chat state icon |
-| `%playerstatus:nosleep%` | skull icon while no-sleep is active |
+| `%fsp:live%` | LIVE badge, clickable if a link is set |
+| `%fsp:stream%` | raw stream URL, empty if not live |
+| `%fsp:live_stream%` | badge + URL together |
+| `%fsp:clickable_stream%` | underlined clickable link with hover text, optional label arg |
+| `%fsp:live_count%` | how many online players are live |
+| `%fsp:coloredname%` | name in the player's set color/gradient |
+| `%fsp:color%` | raw color value |
+| `%fsp:role%` | LuckPerms role symbol |
+| `%fsp:suffix%` | nametag suffix text |
+| `%fsp:vc_status%` | voice chat state icon |
+| `%fsp:nosleep%` | skull icon while no-sleep is active |
 
 ---
 
@@ -72,7 +72,7 @@ Forget all of the above and just run `/features` in-game — it lists every comm
 
 1. Fabric Loader ≥ 0.18.4 (or ≥ 0.19.3 if you're on Minecraft 26.x), plus [Fabric API](https://modrinth.com/mod/fabric-api) and [Placeholder API](https://modrinth.com/mod/placeholder-api).
 2. Grab the jar for your Minecraft version — 1.21.11, 26.1.x, or 26.2.x — and drop it in `mods/`. (26.x needs Java 25 on the server; 1.21.11 needs Java 21.)
-3. Start the server once to generate `config/playerstatus/config.json`.
+3. Start the server once to generate `config/Fanta's Placeholders/config.json`.
 
 That's the whole thing for basic usage — colors, profiles, lore, manual `/live` all work out of the box. Everything past this point is optional, for admins who want to go further.
 
