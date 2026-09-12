@@ -17,10 +17,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.fantac4t.playerstatus.PlayerStatus"
+      "com.fantac4t.fsp.FSP"
     ],
     "voicechat": [
-      "com.fantac4t.playerstatus.voicechat.PlayerStatusVoicechatPlugin"
+      "com.fantac4t.fsp.voicechat.FSPVoicechatPlugin"
     ]
   },
   "mixins": [],

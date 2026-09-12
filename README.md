@@ -21,7 +21,7 @@ One catch: none of this shows up anywhere on its own. You need a chat or tablist
 
 **`/nosleep`.** Opt out of night-skipping — anyone who tries to sleep while you're toggled on gets a warning and then they can leave their bed.
 
-Voice chat status icons show up automatically if [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) is installed (speaking/muted/deafened/etc.) hoever,it doesnt use any textures UNLESS YOU TELL IT TO, you will see ugly text! and role tags pull from [LuckPerms](https://luckperms.net) if that's installed — neither is required, they just quietly do nothing if the mod isn't there.
+Voice chat status icons show up automatically if [Simple Voice Chat](https://modrinth.com/plugin/simple-voice-chat) is installed (speaking/deafened/disconnected/in-group — a muted mic isn't included, since Simple Voice Chat only reports mute to the client) however, it doesn't use any textures UNLESS YOU TELL IT TO, you will see ugly text! and role tags pull from [LuckPerms](https://luckperms.net) if that's installed — neither is required, they just quietly do nothing if the mod isn't there.
 
 Operators get `/tag` for pinning a custom suffix on someone's name, and `/fsp reload` to reload the config without a restart.
 
@@ -48,7 +48,7 @@ Forget all of the above and just run `/features` in-game — it lists every comm
 | `/features [placeholders]` | everyone | list commands or placeholders |
 | `/tag set/get/remove <player> [text]` | op | manage a player's nametag suffix |
 | `/tag list` | op | list everyone with a nametag set |
-| `/fsp reload` | op | reload config.json live |
+| `/fsp reload` | op | reload config.toml live |
 
 ## Placeholders
 
@@ -72,7 +72,7 @@ Forget all of the above and just run `/features` in-game — it lists every comm
 
 1. Fabric Loader ≥ 0.18.4 (or ≥ 0.19.3 if you're on Minecraft 26.x), plus [Fabric API](https://modrinth.com/mod/fabric-api) and [Placeholder API](https://modrinth.com/mod/placeholder-api).
 2. Grab the jar for your Minecraft version — 1.21.11, or 26.x (covers 26.1.x and 26.2.x) — and drop it in `mods/`. (26.x needs Java 25 on the server; 1.21.11 needs Java 21.)
-3. Start the server once to generate `config/Fanta's Placeholders/config.json`.
+3. Start the server once to generate `config/Fanta's Placeholders/config.toml`.
 
 That's the whole thing for basic usage — colors, profiles, lore, manual `/live` all work out of the box. Everything past this point is optional, for admins who want to go further.
 
@@ -83,53 +83,71 @@ That's the whole thing for basic usage — colors, profiles, lore, manual `/live
 
 Grab a client ID and secret from the [Twitch Developer Console](https://dev.twitch.tv/console/apps) and set them in the config:
 
-```json
-"twitchClientId": "...",
-"twitchClientSecret": "...",
-"twitchPollIntervalSeconds": 60
+```toml
+[twitch]
+clientId = "..."
+clientSecret = "..."
+pollIntervalSeconds = 60
 ```
 
 Leave them blank and nothing breaks — players just toggle `/live` manually instead, and the mod tells them so when they set a Twitch link without the poller running.
 
-### The rest of config.json
+Players opt in by running `/live link <their twitch.tv URL>`; the poller only checks channels that are linked *and* currently online. Changes take effect on `/fsp reload` — no restart needed.
+
+### The rest of config.toml
+
+The config is TOML, so every option carries a comment explaining what it does — you shouldn't need this README open while editing it. Options added by a mod update are written into your existing file automatically, with their defaults, and the server log names them.
 
 Every message field takes [MiniMessage-style tags](https://placeholders.pb4.eu/user/text-format/) — colors, gradients, click/hover events, all of it. `{player}`, `{link}`, and `{players}` get substituted where relevant.
 
-```json
-{
-  "livePlaceholder": "<red><bold>LIVE</bold></red>",
-  "notLivePlaceholder": "",
-  "liveOnMessage": "<green>You are now live!</green>",
-  "liveOffMessage": "<yellow>You are no longer live.</yellow>",
-  "liveBroadcastMessage": "<gold>{player}</gold> is now live: <aqua><underline><click:open_url:'{link}'>{link}</click></underline></aqua>",
-  "livePersistOnMessage": "<green>Auto live on reconnect: <bold>ENABLED</bold></green>",
-  "livePersistOffMessage": "<yellow>Auto live on reconnect: <bold>DISABLED</bold></yellow>",
-  "liveLinkSetMessage": "<green>Stream link set to: <white>{link}</white></green>",
-  "liveLinkTwitchNotConfiguredMessage": "<yellow>Note: this server hasn't set up Twitch auto-detection...</yellow>",
-  "twitchClientId": "",
-  "twitchClientSecret": "",
-  "twitchPollIntervalSeconds": 60,
-  "roles": {
-    "owner":     "<gold>[Owner]</gold>",
-    "admin":     "<red>[Admin]</red>",
-    "moderator": "<blue>[Mod]</blue>",
-    "vip":       "<yellow>[VIP]</yellow>",
-    "default":   ""
-  },
-  "vcSpeakingIcon": "⌬",
-  "vcMutedIcon": "⌭",
-  "vcDeafenedIcon": "⌮",
-  "vcDisconnectedIcon": "⌯",
-  "vcGroupIcon": "⌰",
-  "noSleepPlaceholder": "<red>☠</red>",
-  "noSleepNotPlaceholder": "",
-  "noSleepOnMessage": "<red>You have toggled no-sleep on. Others will be warned when they try to sleep.</red>",
-  "noSleepOffMessage": "<green>You have toggled no-sleep off. Others can sleep peacefully.</green>",
-  "noSleepBroadcastOnMessage": "<red>{player} doesn't want to skip the night!</red>",
-  "noSleepBroadcastOffMessage": "<green>{player} is now okay with skipping the night.</green>",
-  "noSleepBedTitle": "<red>Can't skip the night!</red>",
-  "noSleepBedSubtitle": "<yellow>{players} doesn't want to sleep!</yellow>"
-}
+> **Upgrading?** Older versions used `config.json`, in either a flat or a sectioned layout. Whichever you have is converted to `config.toml` on first start, keeping every value you'd customised, and the old file is renamed `config.json.converted-backup` rather than deleted. Nothing to do by hand.
+
+Comments are elided below for brevity; you'll see them in the generated file.
+
+```toml
+[live]
+placeholder = "<red><bold>LIVE</bold></red>"
+offlinePlaceholder = ""
+onMessage = "<green>You are now live!</green>"
+offMessage = "<yellow>You are no longer live.</yellow>"
+broadcastMessage = "<gold>{player}</gold> is now live: <aqua><underline><click:open_url:'{link}'>{link}</click></underline></aqua>"
+persistOnMessage = "<green>Auto live on reconnect: <bold>ENABLED</bold></green>"
+persistOffMessage = "<yellow>Auto live on reconnect: <bold>DISABLED</bold></yellow>"
+linkSetMessage = "<green>Stream link set to: <white>{link}</white></green>"
+twitchNotConfiguredMessage = "<yellow>Note: this server hasn't set up Twitch auto-detection, so your live status won't update automatically. Use <white>/live</white> to toggle it yourself.</yellow>"
+
+[twitch]
+clientId = ""
+clientSecret = ""
+pollIntervalSeconds = 60
+
+[voicechat]
+deafenedIcon = "⌮"
+disconnectedIcon = "⌯"
+speakingIcon = "⌬"
+groupIcon = "⌰"
+
+[nosleep]
+placeholder = "<red>☠</red>"
+inactivePlaceholder = ""
+onMessage = "<red>You have toggled no-sleep on. Others will be warned when they try to sleep.</red>"
+offMessage = "<green>You have toggled no-sleep off. Others can sleep peacefully.</green>"
+broadcastOnMessage = "<red>{player} doesn't want to skip the night!</red>"
+broadcastOffMessage = "<green>{player} is now okay with skipping the night.</green>"
+bedTitle = "<red>Can't skip the night!</red>"
+bedSubtitle = "<yellow>{players} doesn't want to sleep!</yellow>"
+
+[storage]
+autosaveIntervalMinutes = 5
+
+[roles]
+
+[roles.groups]
+owner = "<gold>[Owner]</gold>"
+admin = "<red>[Admin]</red>"
+moderator = "<blue>[Mod]</blue>"
+vip = "<yellow>[VIP]</yellow>"
+default = ""
 ```
 
 `roles` keys need to match your LuckPerms group names exactly. The voice chat icons (`vc*Icon`) map to a font in a resource pack — if the raw glyphs look wrong to players, that's why; you'll want a pack that defines them.

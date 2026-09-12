@@ -53,6 +53,22 @@ dependencies {
     // compile-only for both versions — present at runtime via installed mod
     compileOnly "de.maxhenkel.voicechat:voicechat-api:${voicechat_api_version}"
     compileOnly "net.luckperms:api:5.4"
+
+    // TOML config. Bundled (JiJ) on both branches — it's a plain library, not a mod, so servers
+    // don't have to install anything. CommentedFileConfig is the reason for this dependency:
+    // it writes the explanatory comments, which JSON could never carry.
+    implementation "com.electronwill.night-config:toml:${nightconfig_version}"
+    implementation "com.electronwill.night-config:core:${nightconfig_version}"
+    include        "com.electronwill.night-config:toml:${nightconfig_version}"
+    include        "com.electronwill.night-config:core:${nightconfig_version}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.10.2"
+    testRuntimeOnly    "org.junit.platform:junit-platform-launcher"
+}
+
+tasks.named("test") {
+    useJUnitPlatform()
+    testLogging { events "passed", "skipped", "failed" }
 }
 
 // MC 26.x requires Java 25; older versions use 21
@@ -67,6 +83,9 @@ java {
 
 tasks.withType(JavaCompile).configureEach {
     it.options.release = javaVersion
+    // Explicit, because the default config embeds non-ASCII icons (⌬ ☠ …) as source literals —
+    // relying on the platform default charset would mangle them on a differently-configured JDK.
+    it.options.encoding = "UTF-8"
 }
 
 processResources {
