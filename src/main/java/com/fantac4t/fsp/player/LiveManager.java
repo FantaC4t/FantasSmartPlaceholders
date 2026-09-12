@@ -64,6 +64,12 @@ public final class LiveManager {
         Messages.send(player, FSP.CONFIG.live.linkSetMessage);
         if (channel != null && !TwitchManager.isConfigured()) {
             Messages.send(player, FSP.CONFIG.live.twitchNotConfiguredMessage);
+        } else if (channel == null && TwitchManager.isConfigured()) {
+            // The server CAN auto-detect, but this link isn't a twitch.tv URL it can match against
+            // (a typo like twitch.com, a YouTube/Kick link, etc.) — without this, that fails
+            // completely silently: the player sees the same "link set" confirmation either way,
+            // and their status just never updates, with nothing pointing at why.
+            Messages.send(player, FSP.CONFIG.live.linkNotTwitchMessage);
         }
     }
 

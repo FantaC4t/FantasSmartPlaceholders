@@ -51,6 +51,8 @@ public final class ModConfig {
         public String linkSetMessage     = "<green>Stream link set to: <white>{link}</white></green>";
         public String twitchNotConfiguredMessage =
             "<yellow>Note: this server hasn't set up Twitch auto-detection, so your live status won't update automatically. Use <white>/live</white> to toggle it yourself.</yellow>";
+        public String linkNotTwitchMessage =
+            "<yellow>Note: that doesn't look like a twitch.tv link, so it won't be auto-detected when you go live. Use a URL like <white>https://twitch.tv/yourname</white>, or toggle <white>/live</white> yourself.</yellow>";
     }
 
     public static final class Twitch {
@@ -139,6 +141,10 @@ public final class ModConfig {
         new Opt("live.linkSetMessage",     c -> c.live.linkSetMessage,     (c, v) -> c.live.linkSetMessage = (String) v,     "Confirmation for /live link <url>."),
         new Opt("live.twitchNotConfiguredMessage", c -> c.live.twitchNotConfiguredMessage, (c, v) -> c.live.twitchNotConfiguredMessage = (String) v,
             "Shown when a player links a Twitch URL but the server has no Twitch credentials set."),
+        new Opt("live.linkNotTwitchMessage", c -> c.live.linkNotTwitchMessage, (c, v) -> c.live.linkNotTwitchMessage = (String) v,
+            "Shown when Twitch auto-detection IS configured but the link a player gave isn't a\n"
+          + "twitch.tv URL (e.g. a typo like twitch.com) - so their /live status will never\n"
+          + "update on its own, and nothing else would have told them that."),
 
         new Opt("twitch.clientId",            c -> c.twitch.clientId,            (c, v) -> c.twitch.clientId = (String) v,     null),
         new Opt("twitch.clientSecret",        c -> c.twitch.clientSecret,        (c, v) -> c.twitch.clientSecret = (String) v, "Keep this out of public repos and screenshots."),
